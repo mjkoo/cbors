@@ -9,6 +9,7 @@ use serde_cbor::{ObjectKey, Value};
 
 #[derive(Debug, Clone, Eq, Ord, PartialOrd, PartialEq, Deserialize, Serialize)]
 pub struct CborObjectKey(ObjectKey);
+
 #[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
 pub struct CborValue(Value);
 

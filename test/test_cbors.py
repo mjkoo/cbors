@@ -4,7 +4,7 @@ from string import printable
 import cbors
 import pytest
 
-from hypothesis import given
+from hypothesis import given, settings, HealthCheck
 from hypothesis.strategies import binary, booleans, dictionaries, floats, integers, lists, none, recursive, text
 
 i64 = integers(min_value=-9223372036854775808, max_value=9223372036854775807)
@@ -38,6 +38,7 @@ def assert_equal(expected, actual):
         assert expected == actual
 
 @given(cbor_values)
+@settings(suppress_health_check=(HealthCheck.too_slow,))
 def test_decode_inverts_encode(v):
     assert_equal(v, cbors.loadb(cbors.dumpb(v)))
 
