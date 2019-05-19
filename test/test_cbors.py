@@ -9,9 +9,11 @@ from hypothesis.strategies import binary, booleans, dictionaries, floats, intege
 
 i64 = integers(min_value=-9223372036854775808, max_value=9223372036854775807)
 u64 = integers(min_value=0, max_value=18446744073709551615)
+bytearrays = binary().map(bytearray)
 cbor_keys = none() | booleans() | i64 | text(printable) | binary()
-cbor_values = recursive(none() | booleans() | u64 | i64 | floats() | text(printable) | binary(),
+cbor_values = recursive(none() | booleans() | u64 | i64 | floats() | text(printable) | binary() | bytearrays,
         lambda children: lists(children, 1) | dictionaries(cbor_keys, children, min_size=1))
+
 
 def assert_equal(expected, actual):
     if expected is None:
@@ -37,8 +39,9 @@ def assert_equal(expected, actual):
     else:
         assert expected == actual
 
+
 @given(cbor_values)
-@settings(suppress_health_check=(HealthCheck.too_slow,))
+@settings(suppress_health_check=(HealthCheck.too_slow, ))
 def test_decode_inverts_encode(v):
     assert_equal(v, cbors.loadb(cbors.dumpb(v)))
 
@@ -59,7 +62,6 @@ def test_invalid():
 
 
 def test_input_types():
-    cbors.loadb('1')
     cbors.loadb(b'\x01')
     cbors.loadb(bytearray(b'\x01'))
     with pytest.raises(TypeError):

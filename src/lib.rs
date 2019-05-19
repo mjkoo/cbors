@@ -7,11 +7,13 @@ use pyo3::{wrap_pyfunction, AsPyPointer, FromPyObject, PyObject, ToPyObject};
 use serde::{Deserialize, Serialize};
 use serde_cbor::{ObjectKey, Value};
 
+/// A simplified CBOR value containing only types useful for keys.
 #[derive(Debug, Clone, Eq, Ord, PartialOrd, PartialEq, Deserialize, Serialize)]
-pub struct CborObjectKey(ObjectKey);
+struct CborObjectKey(ObjectKey);
 
+/// An enum over all possible CBOR types.
 #[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
-pub struct CborValue(Value);
+struct CborValue(Value);
 
 impl<'source> FromPyObject<'source> for CborObjectKey {
     fn extract(ob: &'source PyAny) -> PyResult<Self> {
@@ -118,17 +120,19 @@ impl ToPyObject for CborValue {
     }
 }
 
+/// loadb(b: ByteString, /) -> Any
+/// --
+///
+/// This function deserializes CBOR from a bytes or bytearray into an object.
 #[pyfunction]
 fn loadb(py: Python, b: &PyAny) -> PyResult<PyObject> {
-    let b = if let Ok(s) = b.extract::<&str>() {
-        Ok(s.as_bytes())
-    } else if let Ok(b) = b.downcast_ref::<PyByteArray>() {
+    let b = if let Ok(b) = b.downcast_ref::<PyByteArray>() {
         Ok(b.data())
     } else if let Ok(b) = b.downcast_ref::<PyBytes>() {
         Ok(b.as_bytes())
     } else {
         Err(TypeError::py_err(
-            "cbor input must be str, bytes, or bytearray".to_owned(),
+            "cbor input must be bytes or bytearray".to_owned(),
         ))
     }?;
 
@@ -137,6 +141,10 @@ fn loadb(py: Python, b: &PyAny) -> PyResult<PyObject> {
     Ok(value.to_object(py))
 }
 
+/// dumpb(a: Any, /) -> bytes
+/// --
+///
+/// This function serializes an object into CBOR-encoded bytes.
 #[pyfunction]
 fn dumpb(py: Python, a: &PyAny) -> PyResult<PyObject> {
     let bytes = PyBytes::new(
@@ -147,6 +155,7 @@ fn dumpb(py: Python, a: &PyAny) -> PyResult<PyObject> {
     Ok(bytes.to_object(py))
 }
 
+/// A Python CBOR (de)serialization module powered by Rust.
 #[pymodule]
 fn cbors(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_wrapped(wrap_pyfunction!(loadb))?;
