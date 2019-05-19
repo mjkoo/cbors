@@ -9,7 +9,7 @@ install:
   - docker build -t cbors-test:${PYTHON_VERSION}-${TRAVIS_COMMIT} --build-arg PYTHON_VERSION=${PYTHON_VERSION} -f docker/Dockerfile.test .
 
 script:
-  - docker run --rm --security-opt seccomp=unconfined cbors-test:${PYTHON_VERSION}-${TRAVIS_COMMIT} -e ${TOXENV}
+  - docker run --rm --security-opt seccomp=unconfined cbors-test:${PYTHON_VERSION}-${TRAVIS_COMMIT} tox -e ${TOXENV}
 
 matrix:
   include:
