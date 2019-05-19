@@ -1,8 +1,12 @@
 [package]
 name = "cbors"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["Maxwell Koo <mjkoo90@gmail.com>"]
 edition = "2018"
+homepage = "https://github.com/mjkoo/cbors"
+readme = "README.md"
+license = "MIT"
+keywords = ["cbor", "serialization", "deserialization", "python"]
 
 [lib]
 name = "cbors"
