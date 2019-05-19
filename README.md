@@ -1,5 +1,6 @@
 # CBORS
 [![Build Status](https://travis-ci.com/mjkoo/cbors.svg?branch=master)](https://travis-ci.com/mjkoo/cbors)
+[![Coverage Status](https://coveralls.io/repos/github/mjkoo/cbors/badge.svg)](https://coveralls.io/github/mjkoo/cbors)
 
 A Python CBOR (de)serialization module powered by Rust.
 
