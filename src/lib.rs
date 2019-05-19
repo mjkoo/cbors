@@ -2,7 +2,7 @@ use std::collections::BTreeMap;
 
 use pyo3::exceptions::{TypeError, ValueError};
 use pyo3::prelude::*;
-use pyo3::types::{PyAny, PyBytes, PyDict, PyList};
+use pyo3::types::{PyAny, PyByteArray, PyBytes, PyDict, PyList};
 use pyo3::{wrap_pyfunction, AsPyPointer, FromPyObject, PyObject, ToPyObject};
 use serde::{Deserialize, Serialize};
 use serde_cbor::{ObjectKey, Value};
@@ -22,8 +22,10 @@ impl<'source> FromPyObject<'source> for CborObjectKey {
             Ok(CborObjectKey(ObjectKey::Integer(i)))
         } else if let Ok(s) = ob.extract::<String>() {
             Ok(CborObjectKey(ObjectKey::String(s)))
-        } else if let Ok(b) = ob.extract::<Vec<u8>>() {
-            Ok(CborObjectKey(ObjectKey::Bytes(b)))
+        } else if let Ok(b) = ob.downcast_ref::<PyByteArray>() {
+            Ok(CborObjectKey(ObjectKey::Bytes(b.data().to_vec())))
+        } else if let Ok(b) = ob.downcast_ref::<PyBytes>() {
+            Ok(CborObjectKey(ObjectKey::Bytes(b.as_bytes().to_vec())))
         } else {
             Err(TypeError::py_err(format!(
                 "Value not convertable to cbor object key: {}",
@@ -47,7 +49,9 @@ impl<'source> FromPyObject<'source> for CborValue {
             Ok(CborValue(Value::F64(f)))
         } else if let Ok(s) = ob.extract::<String>() {
             Ok(CborValue(Value::String(s)))
-        } else if let Ok(b) = ob.extract::<PyBytes>() {
+        } else if let Ok(b) = ob.downcast_ref::<PyByteArray>() {
+            Ok(CborValue(Value::Bytes(b.data().to_vec())))
+        } else if let Ok(b) = ob.downcast_ref::<PyBytes>() {
             Ok(CborValue(Value::Bytes(b.as_bytes().to_vec())))
         } else if let Ok(a) = ob.downcast_ref::<PyList>() {
             Ok(CborValue(Value::Array(
@@ -114,17 +118,31 @@ impl ToPyObject for CborValue {
 }
 
 #[pyfunction]
-fn loadb(py: Python, b: &PyBytes) -> PyResult<PyObject> {
-    let value = CborValue(
-        serde_cbor::from_slice(b.as_bytes()).map_err(|e| ValueError::py_err(format!("{}", e)))?,
-    );
+fn loadb(py: Python, b: &PyAny) -> PyResult<PyObject> {
+    let b = if let Ok(s) = b.extract::<&str>() {
+        Ok(s.as_bytes())
+    } else if let Ok(b) = b.downcast_ref::<PyByteArray>() {
+        Ok(b.data())
+    } else if let Ok(b) = b.downcast_ref::<PyBytes>() {
+        Ok(b.as_bytes())
+    } else {
+        Err(TypeError::py_err(
+            "cbor input must be str, bytes, or bytearray".to_owned(),
+        ))
+    }?;
+
+    let value =
+        CborValue(serde_cbor::from_slice(b).map_err(|e| ValueError::py_err(format!("{}", e)))?);
     Ok(value.to_object(py))
 }
 
 #[pyfunction]
 fn dumpb(py: Python, a: &PyAny) -> PyResult<PyObject> {
-    let bytes = serde_cbor::to_vec(&a.extract::<CborValue>()?)
-        .map_err(|e| ValueError::py_err(format!("{}", e)))?;
+    let bytes = PyBytes::new(
+        py,
+        &serde_cbor::to_vec(&a.extract::<CborValue>()?)
+            .map_err(|e| ValueError::py_err(format!("{}", e)))?,
+    );
     Ok(bytes.to_object(py))
 }
 
