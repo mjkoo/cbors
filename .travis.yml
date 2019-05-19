@@ -15,4 +15,4 @@ matrix:
   include:
     - env: PYTHON_VERSION=3.5 TOXENV=py35-nocov
     - env: PYTHON_VERSION=3.6 TOXENV=py36-nocov
-    - env: PYTHON_VERSION=3.7 TOXENV=py37-cov TRAVIS_JOB_ID=${TRAVIS_JOB_ID}
+    - env: PYTHON_VERSION=3.7 TOXENV=py37-cov
