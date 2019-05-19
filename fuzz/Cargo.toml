@@ -1,16 +1,16 @@
 [package]
 name = "cbors-fuzz"
 version = "0.0.1"
-authors = ["Automatically generated"]
+authors = ["Maxwell Koo <mjkoo90@gmail.com>"]
+edition = "2018"
 publish = false
 
 [package.metadata]
 cargo-fuzz = true
 
-[dependencies.cbors]
-path = ".."
-[dependencies.libfuzzer-sys]
-git = "https://github.com/rust-fuzz/libfuzzer-sys.git"
+[dependencies]
+serde_cbor = "0.9"
+libfuzzer-sys = { git = "https://github.com/rust-fuzz/libfuzzer-sys.git" }
 
 # Prevent this from interfering with workspaces
 [workspace]

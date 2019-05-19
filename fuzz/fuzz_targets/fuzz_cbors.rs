@@ -1,12 +1,7 @@
 #![no_main]
 use libfuzzer_sys::fuzz_target;
-
-use cbors::cbors;
-use pyo3::prelude::*;
-use pyo3::{wrap_pymodule};
+use serde_cbor::Value;
 
 fuzz_target!(|data: &[u8]| {
-    let gil = Python::acquire_gil();
-    let py = gil.python();
-    let module = wrap_pymodule!(cbors)(py);
+    let _: Result<Value, _> = serde_cbor::from_slice(data);
 });
