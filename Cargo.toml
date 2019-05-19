@@ -12,3 +12,14 @@ crate-type = ["cdylib", "rlib"]
 pyo3 = { version = "0.7.0-alpha.1", features = ["extension-module"] }
 serde = { version = "1.0", features = ["derive"] }
 serde_cbor = "0.9"
+
+[package.metadata.pyo3-pack]
+classifier = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.5",
+    "Programming Language :: Python :: 3.6",
+    "Programming Language :: Python :: 3.7",
+]
