@@ -11,6 +11,17 @@ install:
 script:
   - docker run --rm --security-opt seccomp=unconfined -e TRAVIS_JOB_ID=${TRAVIS_JOB_ID} cbors-test:${PYTHON_VERSION}-${TRAVIS_COMMIT} tox -e ${TOXENV}
 
+deploy:
+  - provider: script
+    script: docker run --rm -e PYO3_PACK_PASSWORD=${PYPI_PASSWORD} cbors-test:${PYTHON_VERSION}-${TRAVIS_COMMIT} pyo3-pack publish -u ${PYPI_USER}
+    on:
+      tags: true
+
+env:
+  global:
+    - PYPI_USER=mjkoo
+    - secure: "n/chuvK2bHd2evbNDufiCsbm5Mi5QJfy2gHJWfuMcBi6W7+zMXEYvVBUFtycL6qauYcndLZJyz8n5uQAfAYbdJxv76Ca0HPUGsM7cmXqqHNA9QdeFU/fJhY8bLXPSwF4J7wwxs1ON2k37FPIN1UTv1/AdsWWQmg2nnU65Yqa5KuRf/0JDFn1obMomyMpt+HODJFaBfqrfKpL0LKDsON3jI9wJEr4kPwneWZ1Vja2dWWHWt4CY5FsRJPs7e49D2+kAZbtBVRfyPyT6AIGRjgapFZT7mKbGOX7+NtWzbinmHf14o0oCFbjVWm9JcwWiolW4ndgFof2wTr1NBubm6yL0HV3wLIc3jFd1jNOo85o3/qG6yb1jD5srKppOXR4xq6Zrj/Zhnn7pzIvli7WA2g7diK/81EnNxyoSwjJRUtEmZPKsQgKeEJyD0vwVmmdU0kSJ0jMp6Sp9UUPRVfIvQ+l/x/SaCtIGmtqebQO1+Eg+xMocttm0Bupa8A8tGcAa2XbVd7HWuGkpH+yEnRs1Hih82158MI6tVPuJH1DDKMUwAKlF7QYeKY9+V17IPp0+IP4+SxBqvMq5V1CHRTFlfoOeJerFMb6pCfBsmL3lOqK5cJF2H0RTHWMHyyZTk1KIhyaeF6pCf31RciuZ+OaK/bHNpqV/XySF+qAfZDLoo8dyZc="
+
 matrix:
   include:
     - env: PYTHON_VERSION=3.5 TOXENV=py35-nocov
