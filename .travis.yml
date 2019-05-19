@@ -1,8 +1,17 @@
-sudo: false
-language: python
-python:
-  - "3.5"
-  - "3.6"
-  - "3.7"
-install: pip install tox-travis
-script: tox
+language: rust
+
+sudo: required
+
+services:  
+  - docker
+
+install:  
+  - docker build -t cbors-test:${PYTHON_VERSION}-${TRAVIS_COMMIT} --build-arg PYTHON_VERSION=${PYTHON_VERSION} -f docker/Dockerfile.test .
+
+script:
+  - docker run cbors-test:${PYTHON_VERSION}-${TRAVIS_COMMIT} tox -e ${TOXENV}
+
+matrix:
+  - PYTHON_VERSION=3.5 TOXENV=py35
+  - PYTHON_VERSION=3.6 TOXENV=py36
+  - PYTHON_VERSION=3.7 TOXENV=py37
