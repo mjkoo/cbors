@@ -1,0 +1,6 @@
+import cbors
+import pytest
+
+def test_bytestring():
+    test = b'\x5f\x44\xaa\xbb\xcc\xdd\x43\xee\xff\x99\xff'
+    assert cbors.loadb(test) == b'\xaa\xbb\xcc\xdd\xee\xff\x99'

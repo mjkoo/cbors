@@ -1,0 +1,13 @@
+[package]
+name = "cbors"
+version = "0.1.0"
+authors = ["Maxwell Koo <mjkoo90@gmail.com>"]
+edition = "2018"
+
+[lib]
+name = "cbors"
+crate-type = ["cdylib"]
+
+[dependencies]
+pyo3 = { version = "0.7.0-alpha.1", features = ["extension-module"] }
+serde_cbor = "0.9"
