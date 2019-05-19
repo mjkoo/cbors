@@ -31,8 +31,7 @@ RUN set -eux; \
         ; \
     rm -rf /var/lib/apt/lists/*;
 
-RUN cargo install pyo3-pack
-RUN pip3 install tox
+RUN pip3 install pyo3-pack tox
 
 WORKDIR /usr/src/cbors
 COPY . ./
