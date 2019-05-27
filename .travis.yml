@@ -16,8 +16,8 @@ jobs:
   include:
     - stage: lint
       script: 
-        - which cargo-fmt && cargo fmt --all -- --check || true
-        - which cargo-clippy && cargo clippy || true
+        - if rustup component add rustfmt; then cargo fmt --all -- --check; else true; fi
+        - if rustup component add clippy; then cargo clippy; else true; fi
 
 script:
   - docker build -t cbors-test:${PYTHON_VERSION}-${TRAVIS_COMMIT} --build-arg PYTHON_VERSION=${PYTHON_VERSION} -f docker/Dockerfile.test .
@@ -36,6 +36,9 @@ env:
 
 matrix:
   include:
-    - env: PYTHON_VERSION=3.5 TOXENV=py35-nocov
-    - env: PYTHON_VERSION=3.6 TOXENV=py36-nocov
-    - env: PYTHON_VERSION=3.7 TOXENV=py37-cov
+    - stage: test
+      env: PYTHON_VERSION=3.5 TOXENV=py35-nocov
+    - stage: test
+      env: PYTHON_VERSION=3.6 TOXENV=py36-nocov
+    - stage: test
+      env: PYTHON_VERSION=3.7 TOXENV=py37-cov
