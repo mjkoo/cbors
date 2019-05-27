@@ -8,9 +8,9 @@ sudo: required
 services:  
   - docker
 
-before_script:
-  - rustup component add rustfmt || true
-  - rustup component add clippy || true
+stages:
+  - lint
+  - test
 
 jobs:
   include:
