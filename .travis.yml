@@ -16,8 +16,8 @@ jobs:
   include:
     - stage: lint
       script: 
-        - cargo fmt --all -- --check
-        - cargo clippy
+        - which cargo-fmt && cargo fmt --all -- --check || true
+        - which cargo-clippy && cargo clippy || true
 
 script:
   - docker build -t cbors-test:${PYTHON_VERSION}-${TRAVIS_COMMIT} --build-arg PYTHON_VERSION=${PYTHON_VERSION} -f docker/Dockerfile.test .
