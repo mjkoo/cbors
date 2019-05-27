@@ -107,12 +107,12 @@ impl ToPyObject for CborValue {
             Value::String(s) => s.to_object(py),
             Value::Bytes(v) => PyBytes::new(py, &v).into(),
             Value::Array(a) => a
-                .into_iter()
+                .iter()
                 .map(|x| CborValue(x.clone()))
                 .collect::<Vec<_>>()
                 .to_object(py),
             Value::Object(d) => d
-                .into_iter()
+                .iter()
                 .map(|(k, v)| (CborObjectKey(k.clone()), CborValue(v.clone())))
                 .collect::<BTreeMap<_, _>>()
                 .to_object(py),

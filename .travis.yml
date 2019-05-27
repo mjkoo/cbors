@@ -1,15 +1,22 @@
-language: minimal
+language: rust
+
+rust:
+  - nightly
 
 sudo: required
 
 services:  
   - docker
 
-install:  
+before_install:
+  - if rustup component add rustfmt; then cargo fmt --all -- --check; else true; fi
+  - if rustup component add clippy; then cargo clippy; else true; fi
+
+install:
   - docker build -t cbors-test:${PYTHON_VERSION}-${TRAVIS_COMMIT} --build-arg PYTHON_VERSION=${PYTHON_VERSION} -f docker/Dockerfile.test .
 
 script:
-  - docker run --rm --security-opt seccomp=unconfined -e TRAVIS_JOB_ID=${TRAVIS_JOB_ID} cbors-test:${PYTHON_VERSION}-${TRAVIS_COMMIT} tox -e ${TOXENV}
+  - docker run --rm --security-opt seccomp=unconfined -e CI=true --env-file <(env | grep ^TRAVIS) cbors-test:${PYTHON_VERSION}-${TRAVIS_COMMIT} tox -e ${TOXENV}
 
 deploy:
   - provider: script
