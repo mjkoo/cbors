@@ -9,14 +9,15 @@ services:
   - docker
 
 before_script:
-  - rustup component add rustfmt clippy
+  #- rustup component add rustfmt clippy
+  - rustup component add clippy
+  #- cargo fmt --all -- --check
+  - cargo clippy
 
 install:  
   - docker build -t cbors-test:${PYTHON_VERSION}-${TRAVIS_COMMIT} --build-arg PYTHON_VERSION=${PYTHON_VERSION} -f docker/Dockerfile.test .
 
 script:
-  - cargo fmt --all -- --check
-  - cargo clippy
   - docker run --rm --security-opt seccomp=unconfined -e CI=true --env-file <(env | grep ^TRAVIS) cbors-test:${PYTHON_VERSION}-${TRAVIS_COMMIT} tox -e ${TOXENV}
 
 deploy:
