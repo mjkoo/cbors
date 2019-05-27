@@ -10,7 +10,19 @@ services:
 
 stages:
   - lint
+  - build
   - test
+  - deploy
+
+build:
+  stage: build
+  script:
+    - docker build -t cbors-test:${PYTHON_VERSION}-${TRAVIS_COMMIT} --build-arg PYTHON_VERSION=${PYTHON_VERSION} -f docker/Dockerfile.test .
+
+test:
+  stage: test
+  script:
+  - docker run --rm --security-opt seccomp=unconfined -e CI=true --env-file <(env | grep ^TRAVIS) cbors-test:${PYTHON_VERSION}-${TRAVIS_COMMIT} tox -e ${TOXENV}
 
 jobs:
   include:
@@ -18,10 +30,18 @@ jobs:
       script: 
         - if rustup component add rustfmt; then cargo fmt --all -- --check; else true; fi
         - if rustup component add clippy; then cargo clippy; else true; fi
-
-script:
-  - docker build -t cbors-test:${PYTHON_VERSION}-${TRAVIS_COMMIT} --build-arg PYTHON_VERSION=${PYTHON_VERSION} -f docker/Dockerfile.test .
-  - docker run --rm --security-opt seccomp=unconfined -e CI=true --env-file <(env | grep ^TRAVIS) cbors-test:${PYTHON_VERSION}-${TRAVIS_COMMIT} tox -e ${TOXENV}
+    - <<: *build
+      env: PYTHON_VERSION=3.5 TOXENV=py35-nocov
+    - <<: *build
+      env: PYTHON_VERSION=3.6 TOXENV=py36-nocov
+    - <<: *build
+      env: PYTHON_VERSION=3.7 TOXENV=py37-cov
+    - <<: *test
+      env: PYTHON_VERSION=3.5 TOXENV=py35-nocov
+    - <<: *test
+      env: PYTHON_VERSION=3.6 TOXENV=py36-nocov
+    - <<: *test
+      env: PYTHON_VERSION=3.7 TOXENV=py37-cov
 
 deploy:
   - provider: script
