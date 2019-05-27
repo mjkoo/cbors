@@ -1,12 +1,17 @@
 [package]
 name = "cbors"
-version = "0.1.1"
+version = "0.1.2"
 authors = ["Maxwell Koo <mjkoo90@gmail.com>"]
 edition = "2018"
 homepage = "https://github.com/mjkoo/cbors"
 readme = "README.md"
 license = "MIT"
 keywords = ["cbor", "serialization", "deserialization", "python"]
+description = "A Python CBOR (de)serialization module, powered by Rust"
+
+[badges]
+travis-ci = { repository = "mjkoo/cbors", branch = "master" }
+codecov = { repository = "mjkoo/cbors", branch = "master" }
 
 [lib]
 name = "cbors"
