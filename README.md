@@ -1,4 +1,4 @@
-# CBORS
+# cbo-rs
 [![Build Status](https://travis-ci.org/mjkoo/cbors.svg?branch=master)](https://travis-ci.org/mjkoo/cbors)
 [![codecov](https://codecov.io/gh/mjkoo/cbors/branch/master/graph/badge.svg)](https://codecov.io/gh/mjkoo/cbors)
 
@@ -43,7 +43,7 @@ assert(s = "foo")
 
 As this uses `serde_cbor` under the hood, the same limitations apply here.
 
-Notably, tags are not currently supported (see https://github.com/pyfisch/cbor/issues/3).
+Notably, tags are not currently supported (see [pyfisch/cbor#3](https://github.com/pyfisch/cbor/issues/3)).
 
 If this functionality is important to you, [cbor2](https://pypi.org/project/cbor2/) might be a better choice.
 

@@ -10,6 +10,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         binutils-dev \
         ca-certificates \
         cmake \
+        curl \
         libcurl4-openssl-dev \
         libelf-dev \
         libdw-dev \
