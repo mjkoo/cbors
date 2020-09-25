@@ -20,7 +20,7 @@ script:
 
 deploy:
   - provider: script
-    script: docker run --rm -v ${TRAVIS_BUILD_DIR}/io -e MATURIN_PASSWORD=${PYPI_PASSWORD} konstin2/maturin publish -u ${PYPI_USER}
+    script: docker run --rm -v ${TRAVIS_BUILD_DIR}:/io -e MATURIN_PASSWORD=${PYPI_PASSWORD} konstin2/maturin publish -u ${PYPI_USER}
     on:
       tags: true
 
