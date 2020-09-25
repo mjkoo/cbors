@@ -17,10 +17,10 @@ Recommended to install from [PyPI](https://pypi.org/project/cbors/), e.g.
 pip install cbors
 ```
 
-To install from source, use [pyo3-pack](https://github.com/PyO3/pyo3-pack) to build a wheel from repository root.
+To install from source, use [maturin](https://github.com/PyO3/maturin) to build a wheel from repository root.
 
 ```
-pyo3-pack build -i python3
+maturin build -i python3
 pip install target/wheels/*.whl
 ```
 
@@ -50,7 +50,7 @@ If this functionality is important to you, [cbor2](https://pypi.org/project/cbor
 
 ## Development
 
-For local development, it is recommended to create a virtual environment, and build the module via `pyo3-pack develop`.
+For local development, it is recommended to create a virtual environment, and build the module via `maturin develop`.
 
 A Dockerfile is provided which will build and install the module and run the test suite.
 
