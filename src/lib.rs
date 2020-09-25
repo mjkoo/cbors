@@ -1,6 +1,6 @@
 use std::collections::BTreeMap;
 
-use pyo3::exceptions::{TypeError, ValueError};
+use pyo3::exceptions::{PyTypeError, PyValueError};
 use pyo3::prelude::*;
 use pyo3::types::{PyAny, PyByteArray, PyBytes, PyDict, PyList};
 use pyo3::{wrap_pyfunction, AsPyPointer, FromPyObject, PyObject, ToPyObject};
@@ -25,12 +25,12 @@ impl<'source> FromPyObject<'source> for CborObjectKey {
             Ok(CborObjectKey(ObjectKey::Integer(i)))
         } else if let Ok(s) = ob.extract::<String>() {
             Ok(CborObjectKey(ObjectKey::String(s)))
-        } else if let Ok(b) = ob.downcast_ref::<PyByteArray>() {
-            Ok(CborObjectKey(ObjectKey::Bytes(b.data().to_vec())))
-        } else if let Ok(b) = ob.downcast_ref::<PyBytes>() {
+        } else if let Ok(b) = ob.downcast::<PyByteArray>() {
+            Ok(CborObjectKey(ObjectKey::Bytes(b.to_vec())))
+        } else if let Ok(b) = ob.downcast::<PyBytes>() {
             Ok(CborObjectKey(ObjectKey::Bytes(b.as_bytes().to_vec())))
         } else {
-            Err(TypeError::py_err(format!(
+            Err(PyTypeError::new_err(format!(
                 "Value not convertable to cbor object key: {}",
                 ob.to_string()
             )))
@@ -52,11 +52,11 @@ impl<'source> FromPyObject<'source> for CborValue {
             Ok(CborValue(Value::F64(f)))
         } else if let Ok(s) = ob.extract::<String>() {
             Ok(CborValue(Value::String(s)))
-        } else if let Ok(b) = ob.downcast_ref::<PyByteArray>() {
-            Ok(CborValue(Value::Bytes(b.data().to_vec())))
-        } else if let Ok(b) = ob.downcast_ref::<PyBytes>() {
+        } else if let Ok(b) = ob.downcast::<PyByteArray>() {
+            Ok(CborValue(Value::Bytes(b.to_vec())))
+        } else if let Ok(b) = ob.downcast::<PyBytes>() {
             Ok(CborValue(Value::Bytes(b.as_bytes().to_vec())))
-        } else if let Ok(a) = ob.downcast_ref::<PyList>() {
+        } else if let Ok(a) = ob.downcast::<PyList>() {
             Ok(CborValue(Value::Array(
                 a.into_iter()
                     .map(|x| {
@@ -65,7 +65,7 @@ impl<'source> FromPyObject<'source> for CborValue {
                     })
                     .collect::<PyResult<Vec<_>>>()?,
             )))
-        } else if let Ok(d) = ob.downcast_ref::<PyDict>() {
+        } else if let Ok(d) = ob.downcast::<PyDict>() {
             Ok(CborValue(Value::Object(
                 d.into_iter()
                     .map(|(k, v)| {
@@ -76,7 +76,7 @@ impl<'source> FromPyObject<'source> for CborValue {
                     .collect::<PyResult<BTreeMap<_, _>>>()?,
             )))
         } else {
-            Err(TypeError::py_err(format!(
+            Err(PyTypeError::new_err(format!(
                 "Value not convertable to cbor value: {}",
                 ob.to_string()
             )))
@@ -126,18 +126,18 @@ impl ToPyObject for CborValue {
 /// This function deserializes CBOR from a bytes or bytearray into an object.
 #[pyfunction]
 fn loadb(py: Python, b: &PyAny) -> PyResult<PyObject> {
-    let b = if let Ok(b) = b.downcast_ref::<PyByteArray>() {
-        Ok(b.data())
-    } else if let Ok(b) = b.downcast_ref::<PyBytes>() {
-        Ok(b.as_bytes())
+    let b = if let Ok(b) = b.downcast::<PyByteArray>() {
+        Ok(b.to_vec())
+    } else if let Ok(b) = b.downcast::<PyBytes>() {
+        Ok(b.as_bytes().to_vec())
     } else {
-        Err(TypeError::py_err(
+        Err(PyTypeError::new_err(
             "cbor input must be bytes or bytearray".to_owned(),
         ))
     }?;
 
     let value =
-        CborValue(serde_cbor::from_slice(b).map_err(|e| ValueError::py_err(format!("{}", e)))?);
+        CborValue(serde_cbor::from_slice(&b).map_err(|e| PyValueError::new_err(format!("{}", e)))?);
     Ok(value.to_object(py))
 }
 
@@ -150,7 +150,7 @@ fn dumpb(py: Python, a: &PyAny) -> PyResult<PyObject> {
     let bytes = PyBytes::new(
         py,
         &serde_cbor::to_vec(&a.extract::<CborValue>()?)
-            .map_err(|e| ValueError::py_err(format!("{}", e)))?,
+            .map_err(|e| PyValueError::new_err(format!("{}", e)))?,
     );
     Ok(bytes.to_object(py))
 }
