@@ -22,10 +22,16 @@ jobs:
     - uses: actions-rs/cargo@v1
       with:
         command: check
-    - uses: actions-rs/clippy-check@v1
+    - name: Generate clippy annotations
+      uses: actions-rs/clippy-check@v1
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
-        args: --all-features -- -D warnings
+        args: --all-targets --all-features
+    - name: Fail on clippy warnings
+      uses: actions-rs/clippy-check@v1
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        args: --all-targets --all-features -- -D warnings
     - uses: actions-rs/cargo@v1
       with:
         command: fmt
