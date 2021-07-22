@@ -5,7 +5,7 @@ use pyo3::prelude::*;
 use pyo3::types::{PyAny, PyByteArray, PyBytes, PyDict, PyList};
 use pyo3::{wrap_pyfunction, AsPyPointer, FromPyObject, PyObject, ToPyObject};
 use serde::{Deserialize, Serialize};
-use serde_cbor::value::{Value};
+use serde_cbor::value::Value;
 
 /// An enum over all possible CBOR types.
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Deserialize, Serialize)]

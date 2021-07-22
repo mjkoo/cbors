@@ -1,5 +1,5 @@
 # cbo-rs
-[![codecov](https://codecov.io/gh/mjkoo/cbors/branch/master/graph/badge.svg)](https://codecov.io/gh/mjkoo/cbors)
+![CI](https://github.com/mjkoo/cbors/actions/workflows/ci.yml/badge.svg?branch=master)
 [![PyPI](https://img.shields.io/pypi/v/cbors.svg)](https://pypi.org/project/cbors/)
 
 A Python CBOR (de)serialization module, powered by Rust.

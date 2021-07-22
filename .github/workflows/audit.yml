@@ -1,7 +1,7 @@
 name: Audit
 on:
   push:
-    paths: 
+    paths:
       - '**/Cargo.toml'
       - '**/Cargo.lock'
 jobs:
