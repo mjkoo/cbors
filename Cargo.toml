@@ -9,10 +9,6 @@ license = "MIT"
 keywords = ["cbor", "serialization", "deserialization", "python"]
 description = "A Python CBOR (de)serialization module, powered by Rust"
 
-[badges]
-travis-ci = { repository = "mjkoo/cbors", branch = "master" }
-codecov = { repository = "mjkoo/cbors", branch = "master" }
-
 [lib]
 name = "cbors"
 crate-type = ["cdylib", "rlib"]
@@ -20,7 +16,7 @@ crate-type = ["cdylib", "rlib"]
 [dependencies]
 pyo3 = { version = "0.12", features = ["extension-module"] }
 serde = { version = "1.0", features = ["derive"] }
-serde_cbor = "0.9"
+serde_cbor = "0.10"
 
 [package.metadata.maturin]
 classifier = [
