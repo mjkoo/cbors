@@ -63,7 +63,7 @@ impl ToPyObject for CborValue {
             Value::Integer(i) => i.to_object(py),
             Value::Float(f) => f.to_object(py),
             Value::Text(s) => s.to_object(py),
-            Value::Bytes(v) => PyBytes::new(py, &v).into(),
+            Value::Bytes(v) => PyBytes::new(py, v).into(),
             Value::Array(a) => a
                 .iter()
                 .map(|x| CborValue(x.clone()))
