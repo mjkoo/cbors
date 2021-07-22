@@ -1,5 +1,4 @@
 # cbo-rs
-[![Build Status](https://travis-ci.org/mjkoo/cbors.svg?branch=master)](https://travis-ci.org/mjkoo/cbors)
 [![codecov](https://codecov.io/gh/mjkoo/cbors/branch/master/graph/badge.svg)](https://codecov.io/gh/mjkoo/cbors)
 [![PyPI](https://img.shields.io/pypi/v/cbors.svg)](https://pypi.org/project/cbors/)
 
