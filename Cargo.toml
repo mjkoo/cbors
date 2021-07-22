@@ -9,9 +9,6 @@ license = "MIT"
 keywords = ["cbor", "serialization", "deserialization", "python"]
 description = "A Python CBOR (de)serialization module, powered by Rust"
 
-[badges]
-codecov = { repository = "mjkoo/cbors", branch = "master" }
-
 [lib]
 name = "cbors"
 crate-type = ["cdylib", "rlib"]
